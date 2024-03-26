@@ -6,7 +6,7 @@
 #define cxmax 1000      
 #define stacksize 5012
 
-// Aluna: Gabriela Zerbone Magno Baptista
+//ALuna: Maira Gomes
 
 enum fct{lit, opr, lod, sto, cal, INT, jmp, jpc};
 typedef struct {
