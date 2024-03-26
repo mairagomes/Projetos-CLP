@@ -1,213 +1,173 @@
-
 #include <stdio.h>
+#include<locale.h>
 
-#define levmax 3
 #define amax 2047
-
-enum fct {LIT, OPR, LOD, STO, CAL, INT, JMP, JPC};
-
-typedef struct tinstruction {
-     enum   fct    f;
-     int    l; 
-     int    a; 
-}instruction;
-
-instruction code[2048];
-
-
+#define levmax 3       
+#define cxmax 1000      
 #define stacksize 5012
 
- 
- int p,
-     b, 
-     t; 
- 
-instruction i;            
-int         s[stacksize]; 
+// Aluna: Gabriela Zerbone Magno Baptista
 
-int base(int l){ 
- int b1; 
+enum fct{lit, opr, lod, sto, cal, INT, jmp, jpc};
+typedef struct {
+    enum fct f; //tipo da funcao
+    long long int l;      //nivel
+    long long int a;      //argumento
+} instruction;
 
- b1 = b; 
- while (l > 0) {
-    b1 = s[b1];
-    l  = l - 1;
- }
- return b1;
+instruction code[cxmax];
+long long int s[stacksize];
+
+int base(int l) {
+    int b1 = 1; // encontra base l níveis abaixo
+
+    while (l > 0) {
+        b1 = code[b1].a;
+        l--;
+    }
+    return b1;
 }
 
+void interpretador() {
+    instruction i;
+    int p = 0, b = 1, t = 0;
 
-int odd(int x){ return (  ((x%2)==1) ); }
+    //espacos reservados
+    s[1] = 0;
+    s[2] = 0;
+    s[3] = 0;
 
-void pcodevhw(){ // begin 
- printf("\n start pl/0");
- printf("\n t   b   p     f   l   a                 0   1   2   3   4   5   6   7   8   9  10  11  12  13  14");
- printf("\n === === ===   === === ===             === === === === === === === === === === === === === === ===");
- t = -1; 
- b = 0; 
- p = 0; 
- 
- 
- s[1] = 0; 
- s[2] = 0; 
- s[3] = 0;
- 
- do {
-  i = code[p]; 
-  
-  printf("\n %3d %3d %3d   ", t, b, p);
-  p = p + 1;
- 
-  switch  (i.f) { 
-    case LIT : { t = t + 1; s[t] = i.a; printf("LIT %3d %3d", i.l, i.a); } break;
-    case OPR :
-               printf("OPR %3d %3d", i.l, i.a);
+    // INSTRUCOES
+/***
+    int soma = 1;
+    for (int i = 2; i <= 100; i++) {
+        soma += i * i;
+***/
+    int k = 0;
+    code[k].f = INT; code[k].l = 0; code[k].a = 6; k++;			// 0-  libera 6 espacos de memoria
+    code[k].f = lit; code[k].l = 0; code[k].a = 2; k++;			// 1 - Inicia contador com 2
+    code[k].f = sto; code[k].l = 0; code[k].a = 3; k++;			// 2 - Salva contador
+    code[k].f = lit; code[k].l = 0; code[k].a = 100; k++;		// 3 - Explicita o Limite
+    code[k].f = sto; code[k].l = 0; code[k].a = 4; k++;			// 4 - Salva o limite
+    code[k].f = lit; code[k].l = 0; code[k].a = 1; k++;			// 5 - Inicia Soma = 1
+    code[k].f = sto; code[k].l = 0; code[k].a = 5; k++;			// 6 - Salva Soma
+    code[k].f = lod; code[k].l = 0; code[k].a = 3; k++;			// 7 - Inicio do loop (carrega i)
+    code[k].f = lod; code[k].l = 0; code[k].a = 3; k++;			// 8 - Prepara quadrado (carrega i)
+    code[k].f = opr; code[k].l = 0; code[k].a = 4; k++;			// 9 - i*i
+    code[k].f = lod; code[k].l = 0; code[k].a = 5; k++;			// 10 - Load Soma
+    code[k].f = opr; code[k].l = 0; code[k].a = 2; k++;			// 11 - Soma + i
+    code[k].f = sto; code[k].l = 0; code[k].a = 5; k++;			// 12 - Salva a Soma
+    code[k].f = lod; code[k].l = 0; code[k].a = 3; k++;			// 13 - Carrega i
+    code[k].f = lod; code[k].l = 0; code[k].a = 4; k++;			// 14 - CArrega Maximo
+    code[k].f = opr; code[k].l = 0; code[k].a = 10; k++;		// 15 - Menor que
+    code[k].f = jpc; code[k].l = 0; code[k].a = 21; k++;		// 16 - Saida do loop
+    code[k].f = lod; code[k].l = 0; code[k].a = 3; k++;			// 17 - carrega i
+    code[k].f = opr; code[k].l = 0; code[k].a = 2; k++;			// 18 - i + 1
+    code[k].f = sto; code[k].l = 0; code[k].a = 3; k++;			// 19 - Salva i
+    code[k].f = jmp; code[k].l = 0; code[k].a = 7; k++;			// 20 - Fim do loop
+    code[k].f = opr; code[k].l = 0; code[k].a = 0;				// 21 - Fim do programa
 
-               switch (i.a) { 
-                 case  0: { 
-                            t = b - 1; 
-                            p = s[t + 3]; 
-                            b = s[t + 2];
-                          }
-                          break;
-         
-                 case  1: { 
-                            s[t] = -s[t];
-                          }
-                          break;
-         
-                 case  2: { 
-                            t    = t - 1; 
-                            s[t] = s[t] + s[t + 1];
-                          }
-                          break;
-         
-                 case  3: { 
-                            t    = t - 1; 
-                            s[t] = s[t] - s[t + 1];
-                          }
-                          break;
-         
-                 case  4: { 
-                            t    = t - 1; 
-                            s[t] = s[t] * s[t + 1];
-                          }
-                          break;
-         
-                 case  5: { 
-                            t    = t - 1; 
-                            s[t] = s[t] / s[t + 1];
-                          }
-                          break;
-         
-                 case  6: {  
-                            s[t] = odd(s[t]); 
-                          }
-                          break;
-         
-                 case  8: { 
-                            t    = t - 1; 
-                            s[t] = (s[t] == s[t + 1]);
-                          }
-                          break;
-         
-                 case  9: { 
-                            t    = t - 1; 
-                            s[t] = (s[t] != s[t + 1]);
-                          }
-                          break;
-         
-                 case 10: { 
-                            t    = t - 1; 
-                            s[t] = (s[t] < s[t + 1]);
-                          }
-                          break;
-         
-                 case 11: { 
-                            t    = t - 1; 
-                            s[t] = (s[t] >= s[t + 1]);
-                          }
-                          break;
-         
-                 case 12: { 
-                            t = t - 1; 
-                            s[t] = (s[t] > s[t + 1]);
-                          }
-                          break;
-         
-                 case 13: { 
-                            t    = t - 1; 
-                            s[t] = (s[t] <= s[t + 1]);
-                          }
-                          break;
-               } 
-           break;
 
-   case LOD : { 
-                printf("LOD %3d %3d", i.l, i.a);
-                t    = t + 1; 
+    printf("\n  p    b   t ");
+    printf("\n|===  === ===");
+    do {
+        i = code[p++];
+        printf("\n|%2d | %2d | %2d | ", p, b, t);
+        switch (i.f) {
+            case lit: // Coloca no topo o valor de 'i.a'
+                t++;
+                s[t] = i.a;
+                break;
+            case opr: 
+                switch(i.a){
+                    case 0: // Return
+                        t = b - 1;
+                        p = s[t + 3];
+                        b = s[t + 2];
+                        break;
+                    case 1: // neg
+                        s[t] = -s[t];
+                        break;
+                    case 2: // Soma
+                        t--;
+                        s[t] = s[t] + s[t + 1];
+                        break;
+                    case 3: // Subtracao
+                        t--;
+                        s[t] = s[t] - s[t + 1];
+                        break;
+                    case 4: // Multiplicacao
+                        t--;
+                        s[t] = s[t] * s[t + 1];
+                        break;
+                    case 5: // Divisao
+                        t--;
+                        s[t] = s[t] / s[t + 1];
+                        break;
+                    case 6: // Resto por 2
+                        s[t] = (s[t]) % 2;
+                        break;
+                    case 8: // Igualdade
+                        t--;
+                        s[t] = (s[t] == s[t + 1]);
+                        break;
+                    case 9: // Diferenca
+                        t--;
+                        s[t] = (s[t] != s[t + 1]);
+                        break;
+                    case 10: // Menor que
+                        t--;
+                        s[t] = (s[t] < s[t + 1]);
+                        break;
+                    case 11: // Menor igual
+                        t--;
+                        s[t] = (s[t] <= s[t + 1]);
+                        break;
+                    case 12: // Maior que
+                        t--;
+                        s[t] = (s[t] > s[t + 1]);
+                        break;
+                    case 13: // Maior igual
+                        t--;
+                        s[t] = (s[t] >= s[t + 1]);
+                        break;
+                }
+                break;
+            case lod:
+                t++;
                 s[t] = s[base(i.l) + i.a];
-              }
-              break;
-
-   case STO : { 
-                printf("STO %3d %3d", i.l, i.a);
-                s[base(i.l)+i.a] = s[t]; 
-                t            = t - 1;
-              }
-              break;
-
-   case CAL :
-              { 
-                printf("CAL %3d %3d", i.l, i.a);
-                s[t + 1] = base(i.l); 
-                s[t + 2] = b; 
+                break;
+            case sto:
+                s[base(i.l) + i.a] = s[t];
+                t--;
+                break;
+            case cal:
+                s[t + 1] = base(i.l);
+                s[t + 2] = b;
                 s[t + 3] = p;
-                b        = t + 1; 
-                p        = i.a;
-              }
-              break;
-
-   case INT : t = t + i.a;printf("INT %3d %3d", i.l, i.a); break;
-   case JMP : p = i.a;    printf("JMP %3d %3d", i.l, i.a); break;
-   case JPC : if (s[t] == 1) { p = i.a; }  t = t - 1; printf("JPC %3d %3d", i.l, i.a); break;
-  } 
-  printf("      s[] : ");
-  for (int h=0; h<=t; h++) { printf(" %3d", s[h]); }
- } while ( p != 0 );
-
- printf("\n === === ===   === === ===             === === === === === === === === === === === === === === ==="); 
- printf("\n t   b   p     f   l   a                 0   1   2   3   4   5   6   7   8   9  10  11  12  13  14");
- printf("\n end pl/0");
+                b = t + 1;
+                p = i.a;
+                break;
+            case INT:
+                t += i.a;
+                break;
+            case jmp:
+                p = i.a;
+                break;
+            case jpc:
+                if (s[t] == 0){
+                    p = i.a;
+                    t--;
+                }
+                break;
+        }
+        //imprime a pilha
+        for (int j = 1; j <= t; j++){
+            printf(" [%lld] ", s[j]);
+        }
+    } while (p != 0);
 }
-
-int main(){
-
-	// preenche as instrucoes no vetor code
-    code[ 0].f = INT; code[ 0].l = 0; code[ 0].a = 6;
-    code[ 1].f = LIT; code[ 1].l = 0; code[ 1].a = 0; //soma
-    code[ 2].f = STO; code[ 2].l = 0; code[ 2].a = 3;
-    code[ 3].f = LIT; code[ 3].l = 0; code[ 3].a = 0; //cont
-    code[ 4].f = STO; code[ 4].l = 0; code[ 4].a = 4;
-    code[ 5].f = LIT; code[ 5].l = 0; code[ 5].a = 101; //limite
-//obs.: o limite é 101 porque a condição para o JPC é s[t]=1, então para que o loop funcione corretamente o limite tem que ser 11 para que sejam realizadas as 100 iterações.
-    code[ 6].f = STO; code[ 6].l = 0; code[ 6].a = 5;
-    code[ 7].f = LOD; code[ 7].l = 0; code[ 7].a = 3; //carrega soma
-    code[ 8].f = LOD; code[ 8].l = 0; code[ 8].a = 4; //carrega cont
-    code[ 9].f = OPR; code[ 9].l = 0; code[ 9].a = 2; //soma+cont
-    code[ 10].f = STO; code[ 10].l = 0; code[ 10].a = 3;
-    code[ 11].f = LOD; code[ 11].l = 0; code[ 11].a = 5; //carrega limite
-    code[ 12].f = LOD; code[ 12].l = 0; code[ 12].a = 4; //carrega cont
-    code[ 13].f = OPR; code[ 13].l = 0; code[ 13].a = 3; //limite-cont
-    code[ 14].f = JPC; code[ 14].l = 0; code[ 14].a = 20; //vai para o final
-    code[ 15].f = LOD; code[ 15].l = 0; code[ 15].a = 4;  //carrega cont
-    code[ 16].f = LIT; code[ 16].l = 0; code[ 16].a = 1; //1
-    code[ 17].f = OPR; code[ 17].l = 0; code[ 17].a = 2; //cont+1
-    code[ 18].f = STO; code[ 18].l = 0; code[ 18].a = 4;
-    code[ 19].f = JMP; code[ 19].l = 0; code[ 19].a = 7; //vai para 7
-    code[ 20].f = OPR; code[ 20].l = 0; code[ 20].a = 0; 
-
-	//chama a P-code machine para interpretar essas instrucoes
-	pcodevhw();
-	return 0;
+int main() {
+    interpretador();
+    return 0;
 }
