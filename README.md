@@ -17,3 +17,10 @@ até 1000.
 1. Implementar nas instruções p-code uma função que calcula a soma de dois números passadoscomo parâmetros.
 2. Implementar nas instruções p-code uma função que calcula o produto de dois números passados como parâmetros.
 3. Implementar nas instruções p-code um programa principal que calcula inicializa as variáveis a = 1, b = 2, c = 3, x = 4 e depois calcula, usando as funções em (1) e (2) acima o valor do polinômio: ax2 + bx + c.
+
+# Proj1d
+Implementar os algoritmos: 
+1. Main e Fat(4) Iterativo.
+2. Main e Fib(5) Iterativo.
+3. Main e Fat(4) Recursivo.
+4. Main e Fib(5) Recursivo.
