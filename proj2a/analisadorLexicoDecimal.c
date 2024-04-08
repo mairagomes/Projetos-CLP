@@ -1,4 +1,5 @@
-//Aluna: Maira Gomes Santos
+//Aluna: Maira Gomes
+
 
 #include <stdio.h>
 #include <ctype.h>
@@ -26,15 +27,16 @@ leitura:
         goto fim;
     }
 
-    if (isdigit(c)) {
+    // Verifica se o caractere é um dígito ou um ponto
+    if (isdigit(c) || c == '.') {
         caracter[i++] = c;
         goto leitura;
     } else if (isspace(c)) {
         if (i > 0) {
             caracter[i] = '\0'; 
             printf("%2d | %10s                         \n", linha_reconhecida++, caracter);
-      
-            i = 0; // 
+
+            i = 0; 
         }
         goto leitura;
     } else {
@@ -43,8 +45,8 @@ leitura:
             caracter[i++] = c; 
         }
         caracter[i] = '\0'; 
-        printf("   |                        | %2d | %-20s \n", linha_nao_reconhecida++, caracter);
-       
+        printf("   |                        | %2d | %-40s \n", linha_nao_reconhecida++, caracter);
+
         i = 0; 
         goto leitura;
     }
@@ -52,7 +54,7 @@ leitura:
 fim:
     if (i > 0) {
         caracter[i] = '\0'; 
-        printf("%2d | %10s                         \n", linha_reconhecida++, caracter);
+        printf("%2d | %10s   \n", linha_reconhecida++, caracter);
     }
     fclose(arquivo);
 
