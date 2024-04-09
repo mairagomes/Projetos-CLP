@@ -14,7 +14,7 @@ int main() {
 
     arquivo = fopen(arq, "r");
     if (arquivo == NULL) {
-        printf("Erro ao abrir o arquivo.\n");
+        
         return 1;
     }
 
