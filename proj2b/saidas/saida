@@ -1,1 +1,25 @@
+Pilha: S 
+Regra 1: S -> aSb
+Regra 1: S -> aSb
+Regra 2: S -> c
+CADEIA ===  aacbb
+Resultado: ACEITA
 
+Pilha: S 
+Regra 1: S -> aSb
+Regra 1: S -> aSb
+Regra 1: S -> aSb
+Regra 2: S -> c
+CADEIA ===  aaacbbb
+Resultado: ACEITA
+
+Pilha: S 
+Regra 1: S -> aSb
+Regra 1: S -> aSb
+CADEIA ===  abc
+Resultado: REJEITADA
+
+Pilha: S 
+Regra 1: S -> aSb
+CADEIA ===  bb
+Resultado: REJEITADA
