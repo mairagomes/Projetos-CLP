@@ -25,5 +25,3 @@ W	X	Y	Z
 4	3	1	2	23
 4	3	2	1	24
 
-
-tempo: 3.19s (cronometragem feita com o cronometro do celular)
