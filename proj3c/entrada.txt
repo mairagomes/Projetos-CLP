@@ -1,0 +1,8 @@
+PUSH(6)
+PUSH(3)
+y=POP(); x=POP(); PUSH(x MUL y)
+PUSH(2)
+PUSH(1)
+y=POP(); x=POP(); PUSH(x ADD y)
+y=POP(); x=POP(); PUSH(x SUB y)
+X = []
