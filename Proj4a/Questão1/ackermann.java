@@ -13,10 +13,23 @@ public class Ackermann {
     }
 
     public static void main(String[] args) {
-        java.util.Scanner scanner = new java.util.Scanner(System.in);
-        System.out.print("Digite os valores de m e n: ");
-        int m = scanner.nextInt();
-        int n = scanner.nextInt();
-        System.out.println("Ackermann(" + m + ", " + n + ") = " + ackermann(m, n));
+        long startTime = System.currentTimeMillis();
+        long endTime;
+        int m, n, result;
+
+        System.out.println("Calculando valores da função de Ackermann que podem ser computados em menos de 1 minuto...");
+
+        for (m = 0; m <= 3; m++) { // Mantenha m pequeno devido ao crescimento rápido
+            for (n = 0; n <= 10; n++) { // Ajuste n conforme necessário
+                endTime = System.currentTimeMillis();
+                if ((endTime - startTime) >= 60000) {
+                    System.out.println("Tempo limite atingido.");
+                    return;
+                }
+                result = ackermann(m, n);
+                System.out.println("Ackermann(" + m + ", " + n + ") = " + result);
+            }
+        }
     }
 }
+
